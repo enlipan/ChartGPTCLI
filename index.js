@@ -3,7 +3,7 @@
 
 import chalk from "chalk";
 import figlet from "figlet";
-import { askQuestionYouWant, askOpenAIKey } from "./lib/inquire.js";
+import { askQuestionYouWant, askOpenAIKey, askKeepGoingon } from "./lib/inquire.js";
 import { createAIPromt } from "./lib/requestAI.js";
 import { getConfig, saveConfig } from "./lib/config.js";
 
@@ -34,23 +34,33 @@ const runCheckKey = async () => {
 };
 await runCheckKey();
 
+
+let shouldKeepDoing;
+let hintMsg = "Your Command?"
+let history = { priorQ: '', priorA: '' };
 // openAI 
 const configuration = new Configuration({
   apiKey: configObj.chatAiKey,
 });
 const openai = new OpenAIApi(configuration);
-
-askQuestionYouWant().then(
-  answer => {
-    const question = createAIPromt(answer.question);
-    const response = openai.createCompletion(question);
-    return response;
-  }).then((response) => {
-    if (response.data && response.data.choices[0]) {
-      console.log(chalk.bold.cyan(response.data.choices[0].text));
-    } else {
-      console.log(chalk.red("Nothing Found!"))
-    }
+const runCompletion = async () => {
+  let inputQuesiton = await askQuestionYouWant(hintMsg);
+  let questionOriginal = inputQuesiton.question;
+  console.log(chalk.bold.cyan("\nQestion:\n" + questionOriginal));
+  let prompt = createAIPromt(inputQuesiton.question, history.priorQ, history.priorA);
+  let response = await openai.createCompletion(prompt);
+  if (response.data && response.data.choices[0]) {
+    let robotAnswerOriginal = response.data.choices[0].text;
+    history.priorQ = inputQuesiton;
+    history.priorA = robotAnswerOriginal;
+    console.log(chalk.bold.cyanBright("AI-Chart:\n" + robotAnswerOriginal));
+  } else {
+    console.log(chalk.red("Nothing Found!"));
   }
-  );
+};
 
+do {
+  await runCompletion();
+  shouldKeepDoing = await askKeepGoingon();
+}
+while (shouldKeepDoing);
