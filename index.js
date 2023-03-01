@@ -51,7 +51,7 @@ const runCompletion = async () => {
   let response = await openai.createCompletion(prompt);
   if (response.data && response.data.choices[0]) {
     let robotAnswerOriginal = response.data.choices[0].text;
-    history.priorQ = inputQuesiton;
+    history.priorQ = questionOriginal;
     history.priorA = robotAnswerOriginal;
     console.log(chalk.bold.cyanBright("AI-Chart:\n" + robotAnswerOriginal));
   } else {
