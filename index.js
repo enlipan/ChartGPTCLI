@@ -45,9 +45,9 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 const runCompletion = async () => {
   let inputQuesiton = await askQuestionYouWant(hintMsg);
-  let questionOriginal = inputQuesiton.question;
+  let questionOriginal = inputQuesiton.question.trimEnd();
   console.log(chalk.bold.cyan("\nQestion:\n" + questionOriginal));
-  let prompt = createAIPromt(inputQuesiton.question, history.priorQ, history.priorA);
+  let prompt = createAIPromt(questionOriginal, history.priorQ, history.priorA);
   let response = await openai.createCompletion(prompt);
   if (response.data && response.data.choices[0]) {
     let robotAnswerOriginal = response.data.choices[0].text;
