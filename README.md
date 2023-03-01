@@ -1,7 +1,8 @@
 # ChartGPTCLI
 
 A Node JS ChartGPT CLI Tool
-![image](https://user-images.githubusercontent.com/8935579/210936741-b01b2da9-314e-4a9c-8f40-add15e771288.png)
+![image](https://user-images.githubusercontent.com/8935579/221769659-7e3e7009-85c9-40a7-9d06-715ceb281995.png)
+
 
 ### Install
 
